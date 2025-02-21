@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader, Dataset
 import matplotlib.pyplot as plt
 import requests
 from bs4 import BeautifulSoup
+import os 
 
 # Download required NLTK resources
 nltk.download('stopwords')
@@ -108,9 +109,11 @@ def retrieve_documents(query, faiss_index_file="faiss_index.bin", metadata_file=
 
 # Reset Training
 def reset_training():
-    global bert_model
-    bert_model = BertForSequenceClassification.from_pretrained("bert-large-uncased")
-    print("🔄 Training has been reset.")
+    if os.path.exists("faiss_index.bin"):
+        os.remove("faiss_index.bin")
+    if os.path.exists("faiss_metadata.csv"):
+        os.remove("faiss_metadata.csv")
+    print("🔄 Training reset: Previous progress erased.")
 
 # Train and Evaluate Model
 def train_model(train_texts, num_epochs=5):
